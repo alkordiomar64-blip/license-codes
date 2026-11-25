@@ -60,74 +60,141 @@ input[type=text], input[type=password], input[type=date] { width: 100%; padding:
 .empty { color: var(--muted); font-size: .9rem; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 [hidden] { display: none !important; }
+
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 5px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.tabs button { border: 0; background: transparent; color: var(--muted); font: 600 .95rem var(--body); padding: 10px 4px; border-radius: 10px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.page { display: grid; gap: 14px; }
+.prods { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.chip.prod[aria-pressed="true"].MZ1 { background: var(--mz); border-color: var(--mz); color: #1a1300; }
+.chip.prod[aria-pressed="true"].BL1 { background: var(--bl); border-color: var(--bl); color: #04201d; }
+.chip:disabled { opacity: .35; cursor: default; }
+input[type=search] { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: 500 1rem var(--body); }
+.btn.small { padding: 7px 11px; font-size: .85rem; border-radius: 10px; }
+.btn.danger { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.btn.wa { text-align: center; text-decoration: none; }
+.filebtn { display: inline-flex; justify-content: center; align-items: center; cursor: pointer; }
+.keyrow { justify-content: space-between; }
+.keyrow > * { flex: 0 0 auto; }
+.company { gap: 0; padding-block: 12px 6px; }
+.chead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; padding-bottom: 8px; }
+.chead b { font-size: 1.05rem; }
+.dev { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; border-top: 1px solid var(--line); padding-block: 10px; }
+.dev .mid { display: grid; min-width: 0; }
+.dev .id { font: 500 .92rem var(--mono); overflow-wrap: anywhere; }
+.dev .st { font-size: .8rem; font-weight: 600; text-align: end; }
+.dev .st.on { color: var(--ok); } .dev .st.off { color: var(--warn); } .dev .st.ended { color: var(--muted); }
+.dev .acts { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 <main>
   <div>
     <h1>License Codes</h1>
-    <p class="sub">Computer ID in, code out. For MZTOOL and BIM Line.</p>
+    <p class="sub">MZTOOL and BIM Line · codes, companies, deactivation.</p>
   </div>
 
-  <section class="card" id="keyCard">
-    <h2>1 · Signing key</h2>
-    <div id="keyNone">
-      <label>Key file (license-signing-key.xml)
+  <nav class="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-make" aria-selected="true">New code</button>
+    <button type="button" role="tab" id="tab-list" aria-selected="false">Companies</button>
+    <button type="button" role="tab" id="tab-set" aria-selected="false">Settings</button>
+  </nav>
+
+  <!-- ============ New code ============ -->
+  <div id="page-make" class="page">
+    <section class="card">
+      <h2>1 · Program</h2>
+      <div class="prods" id="prods"></div>
+      <p class="state" id="noKey" hidden>Load a signing key in Settings first.</p>
+      <label id="pwWrap" hidden>Key password
+        <input type="password" id="pw" autocomplete="current-password">
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>2 · Computer</h2>
+      <label>Company
+        <input type="text" id="company" list="companies" placeholder="e.g. Al Noor Contracting" autocomplete="off">
+      </label>
+      <datalist id="companies"></datalist>
+      <label>Person / computer name
+        <input type="text" id="who" placeholder="e.g. Ahmad - site office" autocomplete="off">
+      </label>
+      <label>Computer ID
+        <input type="text" id="id" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>3 · How long</h2>
+      <div class="chips" id="chips">
+        <button type="button" class="chip" data-m="1">1 month</button>
+        <button type="button" class="chip" data-m="3">3 months</button>
+        <button type="button" class="chip" data-m="6">6 months</button>
+        <button type="button" class="chip" data-m="12" aria-pressed="true">1 year</button>
+        <button type="button" class="chip" data-m="0">No end</button>
+        <button type="button" class="chip" data-m="date">Pick date</button>
+      </div>
+      <input type="date" id="date" hidden>
+      <div class="until" id="until"></div>
+    </section>
+
+    <button type="button" class="btn" id="make">Make code</button>
+    <p class="warn" id="err" hidden></p>
+
+    <section class="card" id="out" hidden>
+      <h2>Code</h2>
+      <div class="code" id="code"></div>
+      <div class="okline" id="checked"></div>
+      <div class="row">
+        <button type="button" class="btn ghost" id="copy">Copy</button>
+        <a class="btn wa" id="wa" target="_blank" rel="noopener">Send on WhatsApp</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ Companies ============ -->
+  <div id="page-list" class="page" hidden>
+    <input type="search" id="q" placeholder="Search company, person or ID" autocomplete="off">
+    <p class="state" id="pubState"></p>
+    <div id="list"></div>
+  </div>
+
+  <!-- ============ Settings ============ -->
+  <div id="page-set" class="page" hidden>
+    <section class="card">
+      <h2>Signing keys</h2>
+      <div id="keys"></div>
+      <label>Add a key file (license-signing-key.xml)
         <input type="file" id="keyFile" accept=".xml,text/xml,application/xml">
       </label>
-    </div>
-    <div id="keyLoaded" hidden class="row">
-      <span id="keyPill" class="pill"></span>
-      <span id="keyState" class="state"></span>
-      <button type="button" class="btn ghost" id="forget" style="flex: 0 0 auto">Remove key</button>
-    </div>
-    <label id="pwWrap" hidden>Key password
-      <input type="password" id="pw" autocomplete="current-password">
-    </label>
-    <p class="warn" id="keyWarn" hidden></p>
-  </section>
+      <p class="warn" id="keyWarn" hidden></p>
+    </section>
 
-  <section class="card">
-    <h2>2 · Computer</h2>
-    <label>Computer ID
-      <input type="text" id="id" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text">
-    </label>
-    <label>Name (for your list, not in the code)
-      <input type="text" id="who" placeholder="e.g. Ahmad - site office" autocomplete="off">
-    </label>
-  </section>
+    <section class="card">
+      <h2>Deactivation list on GitHub</h2>
+      <p class="state">MZTOOL and BIM Line read this list once a day. A computer on it stops until you reactivate it.
+        Needs a GitHub token with write access to the license-codes repository only.</p>
+      <label>GitHub token
+        <input type="password" id="token" autocomplete="off" placeholder="github_pat_...">
+      </label>
+      <div class="row">
+        <button type="button" class="btn ghost" id="saveToken">Save token</button>
+        <button type="button" class="btn ghost" id="testToken">Test</button>
+      </div>
+      <p class="state" id="tokenState"></p>
+    </section>
 
-  <section class="card">
-    <h2>3 · How long</h2>
-    <div class="chips" id="chips">
-      <button type="button" class="chip" data-m="1">1 month</button>
-      <button type="button" class="chip" data-m="3">3 months</button>
-      <button type="button" class="chip" data-m="6">6 months</button>
-      <button type="button" class="chip" data-m="12" aria-pressed="true">1 year</button>
-      <button type="button" class="chip" data-m="0">No end</button>
-      <button type="button" class="chip" data-m="date">Pick date</button>
-    </div>
-    <input type="date" id="date" hidden>
-    <div class="until" id="until"></div>
-  </section>
-
-  <button type="button" class="btn" id="make">Make code</button>
-  <p class="warn" id="err" hidden></p>
-
-  <section class="card" id="out" hidden>
-    <h2>Code</h2>
-    <div class="code" id="code"></div>
-    <div class="okline" id="checked"></div>
-    <div class="row">
-      <button type="button" class="btn ghost" id="copy">Copy</button>
-      <a class="btn wa" id="wa" target="_blank" rel="noopener" style="text-align: center; text-decoration: none">Send on WhatsApp</a>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Made on this phone</h2>
-    <div class="hist" id="hist"></div>
-  </section>
+    <section class="card">
+      <h2>Backup</h2>
+      <p class="state">Everything here lives on this phone only. Keep a backup file somewhere safe.</p>
+      <div class="row">
+        <button type="button" class="btn ghost" id="export">Save backup</button>
+        <label class="btn ghost filebtn">Load backup<input type="file" id="import" accept=".json,application/json" hidden></label>
+      </div>
+      <p class="state" id="backupState"></p>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -206,53 +273,90 @@ const LIC = (() => {
 if (typeof module !== "undefined") module.exports = LIC;
 
 (() => {
+  const OWNER = "alkordiomar64-blip", REPO = "license-codes", LIST_PATH = "revoked.json";
   const $ = id => document.getElementById(id);
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
     del(k) { try { localStorage.removeItem(k); } catch (e) {} }
   };
-  let key = null, months = 12;
+  const fmt = s => s && s !== "0" ? s.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") : "no end";
+  const today = () => LIC.ymd(new Date());
 
-  // ---- the key ----
-  function showKey() {
-    $("keyNone").hidden = !!key;
-    $("keyLoaded").hidden = !key;
-    $("pwWrap").hidden = !(key && key.protected);
-    $("keyWarn").hidden = true;
-    if (!key) return;
-    const p = LIC.PRODUCTS[key.prefix];
-    $("keyPill").className = "pill " + key.prefix;
-    $("keyPill").textContent = p.name;
-    $("keyState").textContent = key.protected ? "password protected, kept on this phone" : "no password, only until this page closes";
-    if (!key.protected) {
-      $("keyWarn").hidden = false;
-      $("keyWarn").textContent = "This key has no password, so it is not saved here. Protect it with a password in the program's License window, then load it again.";
-    }
+  // ---------------- data: keys (one per program) and the devices ----------------
+  let keys = JSON.parse(store.get("lic-keys") || "{}");
+  const oldKey = store.get("lic-key");
+  if (oldKey) { try { const k = LIC.readKey(oldKey); if (k.prefix && k.protected) keys[k.prefix] = oldKey; } catch (e) {} store.del("lic-key"); store.set("lic-keys", JSON.stringify(keys)); }
+
+  let db = JSON.parse(store.get("lic-db") || "[]");
+  const oldHist = JSON.parse(store.get("lic-hist") || "[]");
+  if (oldHist.length) {
+    oldHist.forEach(h => db.push({ company: "", who: h.who || "", id: h.id, p: h.p, end: h.end, made: h.made, code: "", off: false }));
+    store.del("lic-hist");
   }
-  function loadKey(xml, remember) {
-    const k = LIC.readKey(xml);
-    if (!k.prefix) throw new Error("This key is not MZTOOL's or BIM Line's.");
-    key = k;
-    if (remember && k.protected) store.set("lic-key", xml);
-    showKey();
+  const saveDb = () => store.set("lic-db", JSON.stringify(db));
+  saveDb();
+
+  let prod = Object.keys(keys)[0] || null, months = 12;
+
+  // ---------------- tabs ----------------
+  function show(name) {
+    ["make", "list", "set"].forEach(n => { $("page-" + n).hidden = n !== name; $("tab-" + n).setAttribute("aria-selected", String(n === name)); });
+    if (name === "list") drawList();
+    if (name === "set") drawKeys();
+    window.scrollTo(0, 0);
+  }
+  ["make", "list", "set"].forEach(n => $("tab-" + n).addEventListener("click", () => show(n)));
+
+  // ---------------- keys ----------------
+  function drawProds() {
+    const box = $("prods");
+    box.innerHTML = "";
+    Object.keys(LIC.PRODUCTS).forEach(p => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "chip prod " + p; b.textContent = LIC.PRODUCTS[p].name;
+      b.disabled = !keys[p];
+      b.setAttribute("aria-pressed", String(prod === p));
+      b.onclick = () => { prod = p; $("pw").value = ""; drawProds(); };
+      box.appendChild(b);
+    });
+    $("noKey").hidden = Object.keys(keys).length > 0;
+    $("pwWrap").hidden = !prod;
+  }
+  function drawKeys() {
+    const box = $("keys");
+    box.innerHTML = "";
+    if (!Object.keys(keys).length) box.innerHTML = '<p class="state">No key on this phone yet.</p>';
+    Object.keys(keys).forEach(p => {
+      const row = document.createElement("div"); row.className = "row keyrow";
+      row.innerHTML = '<span class="pill ' + p + '"></span><span class="state">password protected</span>';
+      row.querySelector(".pill").textContent = LIC.PRODUCTS[p].name;
+      const rm = document.createElement("button"); rm.type = "button"; rm.className = "btn ghost small"; rm.textContent = "Remove";
+      rm.onclick = () => { delete keys[p]; store.set("lic-keys", JSON.stringify(keys)); if (prod === p) prod = Object.keys(keys)[0] || null; drawKeys(); drawProds(); };
+      row.appendChild(rm);
+      box.appendChild(row);
+    });
   }
   $("keyFile").addEventListener("change", async e => {
     const f = e.target.files[0];
-    if (!f) return;
-    try { loadKey(await f.text(), true); }
-    catch (ex) { $("keyWarn").hidden = false; $("keyWarn").textContent = ex.message; }
     e.target.value = "";
+    if (!f) return;
+    $("keyWarn").hidden = true;
+    try {
+      const xml = await f.text(), k = LIC.readKey(xml);
+      if (!k.prefix) throw new Error("This key is not MZTOOL's or BIM Line's.");
+      if (!k.protected) throw new Error("This key has no password. Protect it in the program's License window first, then load it again.");
+      keys[k.prefix] = xml; store.set("lic-keys", JSON.stringify(keys));
+      if (!prod) prod = k.prefix;
+      drawKeys(); drawProds();
+    } catch (ex) { $("keyWarn").hidden = false; $("keyWarn").textContent = ex.message; }
   });
-  $("forget").addEventListener("click", () => { key = null; store.del("lic-key"); $("pw").value = ""; showKey(); });
 
-  // ---- computer id: capitals and dashes as you type ----
+  // ---------------- new code ----------------
   $("id").addEventListener("input", e => {
     const raw = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 16);
     e.target.value = raw.match(/.{1,4}/g)?.join("-") ?? "";
   });
-
-  // ---- how long ----
   function endDate() {
     if (months === "date") { const v = $("date").value; return v ? new Date(v + "T00:00:00") : null; }
     if (months === 0) return null;
@@ -262,77 +366,188 @@ if (typeof module !== "undefined") module.exports = LIC;
     const d = endDate();
     $("until").textContent = months === 0 ? "Works with no end date." : d ? "Works until " + d.toDateString() + "." : "Pick the last day.";
   }
+  function setMonths(m) {
+    months = m;
+    document.querySelectorAll("#chips .chip").forEach(c => c.setAttribute("aria-pressed", String(String(m) === c.dataset.m)));
+    $("date").hidden = m !== "date";
+    showUntil();
+  }
   $("chips").addEventListener("click", e => {
     const b = e.target.closest(".chip");
-    if (!b) return;
-    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === b)));
-    months = b.dataset.m === "date" ? "date" : Number(b.dataset.m);
-    $("date").hidden = months !== "date";
-    showUntil();
+    if (b) setMonths(b.dataset.m === "date" ? "date" : Number(b.dataset.m));
   });
   $("date").addEventListener("change", showUntil);
 
-  // ---- make ----
-  $("make").addEventListener("click", async () => {
-    $("err").hidden = true;
-    $("out").hidden = true;
-    try {
-      if (!key) throw new Error("Load the signing key first.");
-      const end = endDate();
-      if (months === "date" && !end) throw new Error("Pick the last day.");
-      $("make").disabled = true;
-      $("make").textContent = "Making…";
-      const code = await LIC.createCode(key, $("pw").value, key.prefix, $("id").value, end);
-      const back = await LIC.verifyCode(code, LIC.PRODUCTS[key.prefix].x, LIC.PRODUCTS[key.prefix].y);
-      if (!back) throw new Error("The code did not pass its own check. Nothing was made.");
-      const name = LIC.PRODUCTS[key.prefix].name, id = LIC.normalizeId($("id").value);
-      $("code").textContent = code;
-      $("checked").textContent = "✓ Checked with " + name + "'s public key · " + id + " · " + (end ? "until " + LIC.ymd(end).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") : "no end");
-      $("wa").href = "https://wa.me/?text=" + encodeURIComponent(name + " license code for " + id + ":\n" + code);
-      $("out").hidden = false;
-      const hist = JSON.parse(store.get("lic-hist") || "[]");
-      hist.unshift({ p: key.prefix, id, who: $("who").value.trim(), end: end ? LIC.ymd(end) : "0", made: LIC.ymd(new Date()) });
-      store.set("lic-hist", JSON.stringify(hist.slice(0, 200)));
-      showHist();
-    } catch (ex) {
-      $("err").hidden = false;
-      $("err").textContent = ex.message;
-    } finally {
-      $("make").disabled = false;
-      $("make").textContent = "Make code";
-    }
-  });
-  $("copy").addEventListener("click", () => {
-    const b = $("copy");
-    try {
-      navigator.clipboard.writeText($("code").textContent).then(() => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); },
-        () => window.getSelection().selectAllChildren($("code")));
-    } catch (e) { window.getSelection().selectAllChildren($("code")); }
-  });
-
-  // ---- list ----
-  function showHist() {
-    const hist = JSON.parse(store.get("lic-hist") || "[]");
-    const box = $("hist");
-    box.innerHTML = hist.length ? "" : '<p class="empty">The codes you make here are listed on this phone.</p>';
-    hist.slice(0, 30).forEach(h => {
-      const row = document.createElement("div");
-      const pill = document.createElement("span"); pill.className = "pill " + h.p; pill.textContent = h.p === "MZ1" ? "MZ" : "BL";
-      const mid = document.createElement("span"); mid.innerHTML = '<span class="id"></span><br><small class="exp"></small>';
-      mid.querySelector(".id").textContent = h.id;
-      mid.querySelector(".exp").textContent = (h.who ? h.who + " · " : "") + "made " + h.made.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-      const exp = document.createElement("span"); exp.className = "exp";
-      exp.textContent = h.end === "0" ? "no end" : "to " + h.end.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-      row.append(pill, mid, exp);
-      box.appendChild(row);
-    });
+  function drawCompanies() {
+    $("companies").innerHTML = "";
+    [...new Set(db.map(r => r.company).filter(Boolean))].sort().forEach(c => { const o = document.createElement("option"); o.value = c; $("companies").appendChild(o); });
   }
 
-  const saved = store.get("lic-key");
-  if (saved) { try { loadKey(saved, false); } catch (e) { store.del("lic-key"); } }
-  showKey(); showUntil(); showHist();
+  $("make").addEventListener("click", async () => {
+    $("err").hidden = true; $("out").hidden = true;
+    try {
+      if (!prod || !keys[prod]) throw new Error("Load a signing key in Settings first.");
+      const end = endDate();
+      if (months === "date" && !end) throw new Error("Pick the last day.");
+      $("make").disabled = true; $("make").textContent = "Making…";
+      const key = LIC.readKey(keys[prod]);
+      const code = await LIC.createCode(key, $("pw").value, prod, $("id").value, end);
+      const back = await LIC.verifyCode(code, LIC.PRODUCTS[prod].x, LIC.PRODUCTS[prod].y);
+      if (!back) throw new Error("The code did not pass its own check. Nothing was made.");
+      const id = LIC.normalizeId($("id").value), name = LIC.PRODUCTS[prod].name;
+      $("code").textContent = code;
+      $("checked").textContent = "✓ Checked with " + name + "'s public key · " + id + " · " + (end ? "until " + fmt(LIC.ymd(end)) : "no end");
+      $("wa").href = "https://wa.me/?text=" + encodeURIComponent(name + " license code for " + id + ":\n" + code);
+      $("out").hidden = false;
+
+      // One line per computer and program: a new code replaces the old one
+      const rec = { company: $("company").value.trim(), who: $("who").value.trim(), id, p: prod, end: end ? LIC.ymd(end) : "0", made: today(), code, off: false };
+      const old = db.findIndex(r => r.id === id && r.p === prod);
+      if (old >= 0) { rec.off = db[old].off; db[old] = rec; } else db.unshift(rec);
+      saveDb(); drawCompanies();
+      if (rec.off) { $("err").hidden = false; $("err").textContent = "Note: this computer is deactivated. Reactivate it under Companies or the code won't work."; }
+    } catch (ex) {
+      $("err").hidden = false; $("err").textContent = ex.message;
+    } finally {
+      $("make").disabled = false; $("make").textContent = "Make code";
+    }
+  });
+  function copyText(text, btn) {
+    try { navigator.clipboard.writeText(text).then(() => { const t = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = t, 1500); }, () => {}); } catch (e) {}
+  }
+  $("copy").addEventListener("click", () => copyText($("code").textContent, $("copy")));
+
+  // ---------------- companies ----------------
+  function status(r) {
+    if (r.off) return ["off", "Deactivated"];
+    if (r.end !== "0" && r.end < today()) return ["ended", "Ended " + fmt(r.end)];
+    return ["on", r.end === "0" ? "No end" : "Until " + fmt(r.end)];
+  }
+  function drawList() {
+    const q = $("q").value.trim().toLowerCase();
+    const rows = db.filter(r => !q || [r.company, r.who, r.id, LIC.PRODUCTS[r.p]?.name].join(" ").toLowerCase().includes(q));
+    const groups = {};
+    rows.forEach(r => (groups[r.company || "(no company)"] ||= []).push(r));
+    const box = $("list");
+    box.innerHTML = "";
+    if (!rows.length) { box.innerHTML = '<p class="state">' + (db.length ? "Nothing matches." : "The codes you make are listed here, by company.") + "</p>"; return; }
+    Object.keys(groups).sort().forEach(name => {
+      const list = groups[name];
+      const card = document.createElement("section"); card.className = "card company";
+      const h = document.createElement("div"); h.className = "chead";
+      h.innerHTML = "<b></b><span class=\"state\"></span>";
+      h.querySelector("b").textContent = name;
+      h.querySelector("span").textContent = list.length + " computer(s) · " + list.filter(r => status(r)[0] === "on").length + " working";
+      card.appendChild(h);
+      list.forEach(r => card.appendChild(deviceRow(r)));
+      box.appendChild(card);
+    });
+  }
+  function deviceRow(r) {
+    const [cls, text] = status(r);
+    const row = document.createElement("div"); row.className = "dev";
+    row.innerHTML = '<span class="pill"></span><div class="mid"><span class="id"></span><small class="state"></small></div><span class="st"></span><div class="acts"></div>';
+    row.querySelector(".pill").className = "pill " + r.p;
+    row.querySelector(".pill").textContent = r.p === "MZ1" ? "MZ" : "BL";
+    row.querySelector(".id").textContent = r.id;
+    row.querySelector(".mid small").textContent = (r.who ? r.who + " · " : "") + "made " + fmt(r.made);
+    row.querySelector(".st").className = "st " + cls;
+    row.querySelector(".st").textContent = text;
+    const acts = row.querySelector(".acts");
+    const btn = (label, fn, extra) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn ghost small" + (extra || ""); b.textContent = label; b.onclick = () => fn(b); acts.appendChild(b); };
+    if (r.code) btn("Copy code", b => copyText(r.code, b));
+    btn("Renew", () => {
+      $("company").value = r.company; $("who").value = r.who; $("id").value = r.id;
+      if (keys[r.p]) { prod = r.p; drawProds(); }
+      show("make");
+    });
+    btn(r.off ? "Reactivate" : "Deactivate", b => setOff(r, !r.off, b), r.off ? "" : " danger");
+    btn("Delete", () => {
+      if (row.dataset.sure !== "1") { row.dataset.sure = "1"; acts.lastChild.textContent = "Tap again to delete"; return; }
+      db = db.filter(x => x !== r); saveDb(); drawList(); drawCompanies();
+    });
+    return row;
+  }
+  $("q").addEventListener("input", drawList);
+
+  // ---------------- deactivation list on GitHub ----------------
+  const token = () => store.get("lic-token") || "";
+  const api = (path, opts = {}) => fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + path, {
+    ...opts, headers: { Authorization: "Bearer " + token(), Accept: "application/vnd.github+json", ...(opts.headers || {}) }
+  });
+  const b64 = s => btoa(unescape(encodeURIComponent(s)));
+  const unb64 = s => decodeURIComponent(escape(atob(s.replace(/\n/g, ""))));
+
+  async function setOff(r, off, button) {
+    if (!token()) { $("pubState").textContent = "Add the GitHub token in Settings first: the programs read the list from GitHub."; return; }
+    button.disabled = true; button.textContent = off ? "Deactivating…" : "Reactivating…";
+    try {
+      // The list as it is on GitHub now, with this computer added or taken out
+      const got = await api("/contents/" + LIST_PATH);
+      let list = { MZ1: [], BL1: [] }, sha;
+      if (got.ok) { const j = await got.json(); sha = j.sha; list = { ...list, ...JSON.parse(unb64(j.content)) }; }
+      else if (got.status !== 404) throw new Error("GitHub said " + got.status + (got.status === 401 ? " (check the token)" : ""));
+      const ids = new Set(list[r.p] || []);
+      off ? ids.add(r.id) : ids.delete(r.id);
+      list[r.p] = [...ids].sort();
+      list.updated = new Date().toISOString();
+      const put = await api("/contents/" + LIST_PATH, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: (off ? "Deactivate " : "Reactivate ") + r.p + " " + r.id, content: b64(JSON.stringify(list, null, 2) + "\n"), sha })
+      });
+      if (!put.ok) throw new Error("GitHub said " + put.status + (put.status === 401 || put.status === 403 ? " (the token can't write to " + REPO + ")" : ""));
+      db.filter(x => x.id === r.id && x.p === r.p).forEach(x => x.off = off);
+      saveDb();
+      $("pubState").textContent = (off ? "Deactivated " : "Reactivated ") + r.id + ". The program picks it up within a day, the next time it's online.";
+    } catch (ex) {
+      $("pubState").textContent = "Not changed: " + ex.message;
+    }
+    drawList();
+  }
+
+  $("token").value = token() ? "••••••••" : "";
+  $("saveToken").addEventListener("click", () => {
+    const v = $("token").value.trim();
+    if (!v || v.startsWith("•")) { $("tokenState").textContent = "Paste the token first."; return; }
+    store.set("lic-token", v); $("token").value = "••••••••"; $("tokenState").textContent = "Saved on this phone.";
+  });
+  $("testToken").addEventListener("click", async () => {
+    if (!token()) { $("tokenState").textContent = "Save a token first."; return; }
+    $("tokenState").textContent = "Checking…";
+    try {
+      const r = await api("");
+      if (!r.ok) throw new Error("GitHub said " + r.status);
+      const j = await r.json();
+      $("tokenState").textContent = j.permissions && j.permissions.push ? "✓ The token can update the list." : "The token can read but not write. Give it Contents: Read and write.";
+    } catch (ex) { $("tokenState").textContent = "Not working: " + ex.message; }
+  });
+
+  // ---------------- backup ----------------
+  $("export").addEventListener("click", async () => {
+    const data = JSON.stringify({ app: "license-codes", saved: new Date().toISOString(), devices: db }, null, 2);
+    const file = new File([data], "license-codes-backup-" + today() + ".json", { type: "application/json" });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "License codes backup" }); $("backupState").textContent = "Backup shared."; return; }
+    } catch (e) { if (e.name === "AbortError") return; }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; a.click();
+    $("backupState").textContent = "Backup saved.";
+  });
+  $("import").addEventListener("change", async e => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    try {
+      const j = JSON.parse(await f.text());
+      if (j.app !== "license-codes" || !Array.isArray(j.devices)) throw new Error("This is not a License Codes backup.");
+      let added = 0;
+      j.devices.forEach(r => { if (!db.some(x => x.id === r.id && x.p === r.p)) { db.push(r); added++; } });
+      saveDb(); drawCompanies();
+      $("backupState").textContent = added + " computer(s) added from the backup.";
+    } catch (ex) { $("backupState").textContent = ex.message; }
+  });
+
+  drawProds(); drawCompanies(); showUntil(); show("make");
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
 </body>
 </html>
