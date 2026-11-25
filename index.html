@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Licenses">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d1119">
+<meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>License Codes</title>
+<style>
+/* Layout: one column for a phone - key, computer id, how long, the code */
+:root {
+  --bg: #f3f5f9; --card: #ffffff; --ink: #121826; --muted: #5f6b80; --line: #dfe4ec;
+  --accent: #0a8f86; --accent-ink: #ffffff; --warn: #c2410c; --ok: #15803d;
+  --mz: #b8860b; --bl: #0a8f86;
+  --body: -apple-system, "SF Pro Text", system-ui, "Segoe UI", sans-serif; --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0d1119; --card: #161c27; --ink: #e9edf3; --muted: #97a3b6; --line: #263042; --accent: #2cc5b9; --accent-ink: #06201d; --warn: #fb923c; --ok: #4ade80; --mz: #e3b341; --bl: #2cc5b9; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0d1119; --card: #161c27; --ink: #e9edf3; --muted: #97a3b6; --line: #263042; --accent: #2cc5b9; --accent-ink: #06201d; --warn: #fb923c; --ok: #4ade80; --mz: #e3b341; --bl: #2cc5b9; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.5 var(--body); }
+main { max-width: 560px; margin: 0 auto; padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+h1 { font: 700 1.5rem var(--body); margin: 4px 0 0; }
+.sub { color: var(--muted); margin: 0; font-size: .92rem; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; }
+.card h2 { font: 600 .78rem var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+label { display: grid; gap: 6px; font-weight: 600; font-size: .92rem; }
+input[type=text], input[type=password], input[type=date] { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: 500 1rem var(--body); min-width: 0; }
+#id { font: 500 1.15rem var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+.btn { border: 0; border-radius: 12px; padding: 13px 16px; font: 600 1rem var(--body); cursor: pointer; background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.wa { background: #1faa59; color: #fff; }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row > * { flex: 1 1 auto; }
+.chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 12px; padding: 11px 6px; font: 600 .92rem var(--body); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 12px; font: 600 .85rem var(--body); color: #fff; }
+.pill.MZ1 { background: var(--mz); } .pill.BL1 { background: var(--bl); }
+.state { font-size: .9rem; color: var(--muted); }
+.warn { color: var(--warn); font-size: .9rem; }
+.okline { color: var(--ok); font-size: .9rem; font-weight: 600; }
+.code { font: 500 .82rem/1.5 var(--mono); background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 12px; overflow-wrap: anywhere; user-select: all; }
+.until { font: 600 1.05rem var(--body); }
+.hist { display: grid; gap: 8px; }
+.hist div { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-size: .88rem; border-top: 1px solid var(--line); padding-top: 8px; }
+.hist .id { font-family: var(--mono); }
+.hist .exp { color: var(--muted); font-variant-numeric: tabular-nums; }
+.empty { color: var(--muted); font-size: .9rem; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <h1>License Codes</h1>
+    <p class="sub">Computer ID in, code out. For MZTOOL and BIM Line.</p>
+  </div>
+
+  <section class="card" id="keyCard">
+    <h2>1 · Signing key</h2>
+    <div id="keyNone">
+      <label>Key file (license-signing-key.xml)
+        <input type="file" id="keyFile" accept=".xml,text/xml,application/xml">
+      </label>
+    </div>
+    <div id="keyLoaded" hidden class="row">
+      <span id="keyPill" class="pill"></span>
+      <span id="keyState" class="state"></span>
+      <button type="button" class="btn ghost" id="forget" style="flex: 0 0 auto">Remove key</button>
+    </div>
+    <label id="pwWrap" hidden>Key password
+      <input type="password" id="pw" autocomplete="current-password">
+    </label>
+    <p class="warn" id="keyWarn" hidden></p>
+  </section>
+
+  <section class="card">
+    <h2>2 · Computer</h2>
+    <label>Computer ID
+      <input type="text" id="id" placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+    </label>
+    <label>Name (for your list, not in the code)
+      <input type="text" id="who" placeholder="e.g. Ahmad - site office" autocomplete="off">
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>3 · How long</h2>
+    <div class="chips" id="chips">
+      <button type="button" class="chip" data-m="1">1 month</button>
+      <button type="button" class="chip" data-m="3">3 months</button>
+      <button type="button" class="chip" data-m="6">6 months</button>
+      <button type="button" class="chip" data-m="12" aria-pressed="true">1 year</button>
+      <button type="button" class="chip" data-m="0">No end</button>
+      <button type="button" class="chip" data-m="date">Pick date</button>
+    </div>
+    <input type="date" id="date" hidden>
+    <div class="until" id="until"></div>
+  </section>
+
+  <button type="button" class="btn" id="make">Make code</button>
+  <p class="warn" id="err" hidden></p>
+
+  <section class="card" id="out" hidden>
+    <h2>Code</h2>
+    <div class="code" id="code"></div>
+    <div class="okline" id="checked"></div>
+    <div class="row">
+      <button type="button" class="btn ghost" id="copy">Copy</button>
+      <a class="btn wa" id="wa" target="_blank" rel="noopener" style="text-align: center; text-decoration: none">Send on WhatsApp</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Made on this phone</h2>
+    <div class="hist" id="hist"></div>
+  </section>
+</main>
+
+<script>
+// License codes, the same as MzLicense.CreateCode / BimLicense.CreateCode:
+// "<prefix>|<computer id>|<yyyyMMdd or 0>" signed with ECDSA P-256 / SHA-256 (r||s), both parts base64url, joined by "."
+// The key file is the program's own XML: X, Y and D, or (password protected) Salt, IV, Data, Mac -
+// PBKDF2-SHA256 200000 rounds -> 64 bytes (AES-256 key | HMAC key), HMAC-SHA256 over IV+Data, AES-CBC/PKCS7.
+const LIC = (() => {
+  const subtle = globalThis.crypto.subtle;
+  const PRODUCTS = {
+    MZ1: { name: "MZTOOL", x: "6M1BzwhrqN3rnnVs8ddmqgzJBLWirRcqAuy8xFXWLAk=", y: "GjZ1g79IkpBU7eCJ+sDTZ/3SRrSXNYqEMCgqubZ9qyU=" },
+    BL1: { name: "BIM Line", x: "JZTqbDhLKPC3Yb4Nx0CXUKiyrDpwuxcwgGwehuI43yE=", y: "z3LD9QPeNjVlIRaGAKsjur7L2dsqcZuyK9sc9DNHTtM=" }
+  };
+  const fromB64 = s => Uint8Array.from(atob(s.trim()), c => c.charCodeAt(0));
+  const toB64Url = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const fromB64Url = s => { s = s.trim().replace(/-/g, "+").replace(/_/g, "/"); return fromB64(s + "===".slice((s.length + 3) % 4)); };
+  const utf8 = s => new TextEncoder().encode(s);
+  const concat = (a, b) => { const r = new Uint8Array(a.length + b.length); r.set(a); r.set(b, a.length); return r; };
+
+  // The key file -> its parts; the product is found from the public half
+  function readKey(xml) {
+    const tag = t => { const m = new RegExp("<" + t + ">\\s*([^<]+?)\\s*</" + t + ">").exec(xml); return m ? m[1] : null; };
+    const key = { x: tag("X"), y: tag("Y"), d: tag("D"), salt: tag("Salt"), iv: tag("IV"), data: tag("Data"), mac: tag("Mac") };
+    if (!key.x || !key.y || !(key.d || (key.salt && key.iv && key.data && key.mac)))
+      throw new Error("This is not a license signing key file.");
+    key.prefix = Object.keys(PRODUCTS).find(p => PRODUCTS[p].x === key.x && PRODUCTS[p].y === key.y) || null;
+    key.protected = !key.d;
+    return key;
+  }
+
+  async function privateD(key, password) {
+    if (key.d) return fromB64(key.d);
+    if (!password) throw new Error("Enter the key password.");
+    const base = await subtle.importKey("raw", utf8(password), "PBKDF2", false, ["deriveBits"]);
+    const bits = new Uint8Array(await subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: fromB64(key.salt), iterations: 200000 }, base, 512));
+    const iv = fromB64(key.iv), data = fromB64(key.data);
+    const macKey = await subtle.importKey("raw", bits.slice(32), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    if (!await subtle.verify("HMAC", macKey, fromB64(key.mac), concat(iv, data))) throw new Error("Wrong password.");
+    const aes = await subtle.importKey("raw", bits.slice(0, 32), "AES-CBC", false, ["decrypt"]);
+    return new Uint8Array(await subtle.decrypt({ name: "AES-CBC", iv }, aes, data));
+  }
+
+  function normalizeId(id) {
+    const s = (id || "").trim().toUpperCase();
+    if (!/^[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}$/.test(s)) throw new Error("A computer id looks like XXXX-XXXX-XXXX-XXXX.");
+    return s;
+  }
+
+  // expires: a Date (the last day it works) or null (no end)
+  const ymd = d => d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+
+  async function createCode(key, password, prefix, machineId, expires) {
+    const d = await privateD(key, password);
+    const id = normalizeId(machineId);
+    const payload = utf8(prefix + "|" + id + "|" + (expires ? ymd(expires) : "0"));
+    const jwk = { kty: "EC", crv: "P-256", x: toB64Url(fromB64(key.x)), y: toB64Url(fromB64(key.y)), d: toB64Url(d), ext: true };
+    const priv = await subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+    const sig = await subtle.sign({ name: "ECDSA", hash: "SHA-256" }, priv, payload);
+    return toB64Url(payload) + "." + toB64Url(sig);
+  }
+
+  // Checks a code against a public key (the product's, or the key file's own); returns its fields
+  async function verifyCode(code, x, y) {
+    const parts = (code || "").trim().split(".");
+    if (parts.length !== 2) return null;
+    const payload = fromB64Url(parts[0]), sig = fromB64Url(parts[1]);
+    const jwk = { kty: "EC", crv: "P-256", x: toB64Url(fromB64(x)), y: toB64Url(fromB64(y)), ext: true };
+    const pub = await subtle.importKey("jwk", jwk, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
+    if (!await subtle.verify({ name: "ECDSA", hash: "SHA-256" }, pub, sig, payload)) return null;
+    const f = new TextDecoder().decode(payload).split("|");
+    return { prefix: f[0], id: f[1], expires: f[2] };
+  }
+
+  return { PRODUCTS, readKey, createCode, verifyCode, normalizeId, ymd };
+})();
+if (typeof module !== "undefined") module.exports = LIC;
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+  let key = null, months = 12;
+
+  // ---- the key ----
+  function showKey() {
+    $("keyNone").hidden = !!key;
+    $("keyLoaded").hidden = !key;
+    $("pwWrap").hidden = !(key && key.protected);
+    $("keyWarn").hidden = true;
+    if (!key) return;
+    const p = LIC.PRODUCTS[key.prefix];
+    $("keyPill").className = "pill " + key.prefix;
+    $("keyPill").textContent = p.name;
+    $("keyState").textContent = key.protected ? "password protected, kept on this phone" : "no password, only until this page closes";
+    if (!key.protected) {
+      $("keyWarn").hidden = false;
+      $("keyWarn").textContent = "This key has no password, so it is not saved here. Protect it with a password in the program's License window, then load it again.";
+    }
+  }
+  function loadKey(xml, remember) {
+    const k = LIC.readKey(xml);
+    if (!k.prefix) throw new Error("This key is not MZTOOL's or BIM Line's.");
+    key = k;
+    if (remember && k.protected) store.set("lic-key", xml);
+    showKey();
+  }
+  $("keyFile").addEventListener("change", async e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    try { loadKey(await f.text(), true); }
+    catch (ex) { $("keyWarn").hidden = false; $("keyWarn").textContent = ex.message; }
+    e.target.value = "";
+  });
+  $("forget").addEventListener("click", () => { key = null; store.del("lic-key"); $("pw").value = ""; showKey(); });
+
+  // ---- computer id: capitals and dashes as you type ----
+  $("id").addEventListener("input", e => {
+    const raw = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, 16);
+    e.target.value = raw.match(/.{1,4}/g)?.join("-") ?? "";
+  });
+
+  // ---- how long ----
+  function endDate() {
+    if (months === "date") { const v = $("date").value; return v ? new Date(v + "T00:00:00") : null; }
+    if (months === 0) return null;
+    const d = new Date(); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + months); return d;
+  }
+  function showUntil() {
+    const d = endDate();
+    $("until").textContent = months === 0 ? "Works with no end date." : d ? "Works until " + d.toDateString() + "." : "Pick the last day.";
+  }
+  $("chips").addEventListener("click", e => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+    months = b.dataset.m === "date" ? "date" : Number(b.dataset.m);
+    $("date").hidden = months !== "date";
+    showUntil();
+  });
+  $("date").addEventListener("change", showUntil);
+
+  // ---- make ----
+  $("make").addEventListener("click", async () => {
+    $("err").hidden = true;
+    $("out").hidden = true;
+    try {
+      if (!key) throw new Error("Load the signing key first.");
+      const end = endDate();
+      if (months === "date" && !end) throw new Error("Pick the last day.");
+      $("make").disabled = true;
+      $("make").textContent = "Making…";
+      const code = await LIC.createCode(key, $("pw").value, key.prefix, $("id").value, end);
+      const back = await LIC.verifyCode(code, LIC.PRODUCTS[key.prefix].x, LIC.PRODUCTS[key.prefix].y);
+      if (!back) throw new Error("The code did not pass its own check. Nothing was made.");
+      const name = LIC.PRODUCTS[key.prefix].name, id = LIC.normalizeId($("id").value);
+      $("code").textContent = code;
+      $("checked").textContent = "✓ Checked with " + name + "'s public key · " + id + " · " + (end ? "until " + LIC.ymd(end).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") : "no end");
+      $("wa").href = "https://wa.me/?text=" + encodeURIComponent(name + " license code for " + id + ":\n" + code);
+      $("out").hidden = false;
+      const hist = JSON.parse(store.get("lic-hist") || "[]");
+      hist.unshift({ p: key.prefix, id, who: $("who").value.trim(), end: end ? LIC.ymd(end) : "0", made: LIC.ymd(new Date()) });
+      store.set("lic-hist", JSON.stringify(hist.slice(0, 200)));
+      showHist();
+    } catch (ex) {
+      $("err").hidden = false;
+      $("err").textContent = ex.message;
+    } finally {
+      $("make").disabled = false;
+      $("make").textContent = "Make code";
+    }
+  });
+  $("copy").addEventListener("click", () => {
+    const b = $("copy");
+    try {
+      navigator.clipboard.writeText($("code").textContent).then(() => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); },
+        () => window.getSelection().selectAllChildren($("code")));
+    } catch (e) { window.getSelection().selectAllChildren($("code")); }
+  });
+
+  // ---- list ----
+  function showHist() {
+    const hist = JSON.parse(store.get("lic-hist") || "[]");
+    const box = $("hist");
+    box.innerHTML = hist.length ? "" : '<p class="empty">The codes you make here are listed on this phone.</p>';
+    hist.slice(0, 30).forEach(h => {
+      const row = document.createElement("div");
+      const pill = document.createElement("span"); pill.className = "pill " + h.p; pill.textContent = h.p === "MZ1" ? "MZ" : "BL";
+      const mid = document.createElement("span"); mid.innerHTML = '<span class="id"></span><br><small class="exp"></small>';
+      mid.querySelector(".id").textContent = h.id;
+      mid.querySelector(".exp").textContent = (h.who ? h.who + " · " : "") + "made " + h.made.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+      const exp = document.createElement("span"); exp.className = "exp";
+      exp.textContent = h.end === "0" ? "no end" : "to " + h.end.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+      row.append(pill, mid, exp);
+      box.appendChild(row);
+    });
+  }
+
+  const saved = store.get("lic-key");
+  if (saved) { try { loadKey(saved, false); } catch (e) { store.del("lic-key"); } }
+  showKey(); showUntil(); showHist();
+})();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>
